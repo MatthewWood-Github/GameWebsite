@@ -1,0 +1,73 @@
+body {
+    background-color: #232323;
+}
+
+ul {
+    height: 100%;
+    margin: 0px;
+}
+
+li {
+    display: block;   
+    text-align: justify;
+    font-size: larger;
+    line-height: 45px;
+}
+
+a, a:visited, a:hover, a:active {
+    color: white;
+    display: block;
+    text-decoration: none;
+  }
+
+.navbar {
+    height: 48px;
+    width: 100%;
+    color: white;
+    background-color: #333333;
+    font-family: "Copperplate", fantasy;
+}
+
+.centerNavbarElements {
+    height: 100%;
+    width: 50%;
+    margin: auto;
+}
+
+.center {
+    display: flex;
+    justify-content: space-around;
+}
+
+.main {
+    height: 90%;
+    width: 100%
+}
+
+.grid {
+    width: 302px;
+    height: 602px;
+    background-image: url('tetris-grid.png');
+    position: relative;
+}
+
+.debug {
+    color: lightgrey;
+    text-align: center;
+    padding: 5px;
+    border: 1px solid lightgrey;
+
+    width: 25%;
+    height: auto;
+}
+
+.keyboard-debug {
+    color: lightgrey;
+    text-align: center;
+    font-size: 200px;
+    padding: 5px;
+    border: 1px solid lightgrey;
+
+    width: 25%;
+    height: 100%;
+}
