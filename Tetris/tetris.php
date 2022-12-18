@@ -19,9 +19,7 @@
         </nav>
 
         <div class="center" style="margin-top: 20px;">
-            <div class = "debug" id="debug"> </div>
             <div class="grid" id="grid"> </div>
-            <div class="keyboard-debug" id="keyboard-debug"> _ </div>
         </div>
         
     <script src="tetris-logic.js"></script>

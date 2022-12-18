@@ -49,6 +49,10 @@ a, a:visited, a:hover, a:active {
     height: 602px;
     background-image: url('tetris-grid.png');
     position: relative;
+
+    display: grid;
+    grid-template-columns: repeat(10, 30px);
+    grid-template-rows: repeat(20, 30px);
 }
 
 .debug {
@@ -64,7 +68,7 @@ a, a:visited, a:hover, a:active {
 .keyboard-debug {
     color: lightgrey;
     text-align: center;
-    font-size: 200px;
+    font-size: 50px;
     padding: 5px;
     border: 1px solid lightgrey;
 
