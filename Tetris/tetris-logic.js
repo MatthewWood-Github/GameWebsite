@@ -140,29 +140,6 @@ function createBoard(width, height)
     return output;
 } 
 
-function drawPieces2()
-{
-    grid.innerHTML = "";
-
-    for (let i = 0; i < pieces.length; i++)
-    {
-        for (let j = 0; j < pieces[i].blocks.length; j++)
-        {
-            let block = pieces[i].blocks[j];
-            let elem = document.createElement("img");
-            elem.setAttribute("src", `${pieces[i].sprite}`);
-            elem.setAttribute("alt", "block");
-            elem.style.position = "absolute";
-
-            let blockX = block.x * blockWidth;
-            let blockY = block.y * blockWidth;
-
-            elem.style.transform = `translate(${blockX}px, ${blockY}px`;
-            grid.append(elem);
-        }
-    }
-}
-
 function drawPieces()
 {
     grid.innerHTML = "";
