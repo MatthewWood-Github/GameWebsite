@@ -122,7 +122,6 @@ var possiblePieces = [piece_I, piece_L, piece_O, piece_T, piece_Z, piece_S, piec
 var pieceCount = 0;
 var pieces = [];
 
-var debugMenu = document.getElementById("debug");
 var grid = document.getElementById("grid");
 
 var currentKey;
@@ -141,41 +140,7 @@ function createBoard(width, height)
     return output;
 } 
 
-// Left output
-function outputHTML()
-{   
-    debugMenu.innerHTML="";
-    var output = "";
-    for (var i=0; i < 20; i++)
-    {
-        for (var j=0; j < 10; j++)
-        {
-            output+=board[j][i]+"&nbsp;&nbsp;&nbsp;&nbsp;";
-        }
-
-        debugMenu.innerHTML += output + "<br><br>";
-        output=""
-    }  
-}
-
-// Console Log
-function outputBoard()
-{   
-    console.clear();
-    var output = "";
-    for (var i=0; i < board[0].length; i++)
-    {
-        for (var j=0; j < board.length; j++)
-        {
-            output+=board[j][i]+" ";
-        }
-
-        console.log(output);
-        output=""
-    }  
-}
-
-function drawPieces()
+function drawPieces2()
 {
     grid.innerHTML = "";
 
@@ -198,6 +163,31 @@ function drawPieces()
     }
 }
 
+function drawPieces()
+{
+    grid.innerHTML = "";
+
+    for (let i = 0; i < board.length; i++)
+    {
+        for (let j = 0; j < board[i].length; j++)
+        {
+            if (board[i][j] != "_")
+            {
+                let piece = pieces[board[i][j]-1];
+                let elem = document.createElement("img");
+                elem.setAttribute("src", `${piece.sprite}`);
+                elem.setAttribute("alt", "block");
+                elem.style.position = "absolute";
+
+                let blockX = i * blockWidth;
+                let blockY = j * blockWidth;
+
+                elem.style.transform = `translate(${blockX}px, ${blockY}px`;
+                grid.append(elem);
+            }
+        }
+    }
+}
 function update()
 {   
     board = createBoard(10, 20);
@@ -242,13 +232,68 @@ function playerInput()
     });
 }
 
+function validSpace(space)
+{
+    return space == "_";
+}
+
+function checkWin()
+{
+    for (let i = 0; i < board.length; i++)
+    {
+        if (board[i][0] != "_") return false; 
+        if (board[i][1] != "_") return false; 
+    }
+    return true;
+}
+
+
+function getRow(row)
+{
+    output = [];
+    for (let i = 0; i < board.length; i++)
+    {
+        for (let j = 0; j < row; j++)
+        {
+            output[i] = board[i][j];
+        }
+    }
+
+    return output;
+}
+
+function destroyRow()
+{
+    if (!getRow(20).includes("_"))
+    {
+        
+        for (let i = 0; i < board.length; i++)
+        {
+            for (let j = 0; j < 20; j++)
+            {
+                board[i][j] = "_";
+            }
+        }
+        drawPieces();
+        console.log(board);
+    } 
+}
+
+function checkForRowClears()
+{
+    console.clear();
+    for (let i = 0; i < 20; i++)
+    {
+        console.log(checkRow(i));
+    }
+}
+
 class Piece {
     constructor(startX, startY, type) {
       this.startX = startX;
       this.startY = startY;
       this.id = ++pieceCount;
 
-      //Array
       this.type = type['shape'];
       this.sprite = type['sprite'];
       this.rotation = type['rotation'];
@@ -277,21 +322,9 @@ class Piece {
             let spaceBelow = currentBlock.y+1;
             let belowValue = board[currentBlock.x][spaceBelow];
             
-            if (belowValue === undefined) 
-            {
-                console.log("Y value excedes board length.");
-                return false;
-            }
+            if (belowValue === undefined) return false;
             
-            if (belowValue != "_" && belowValue != currentBlock.id)
-            {
-                console.log(`Invalid position below: ${belowValue}.`);
-                return false;
-            } 
-            /*
-            console.clear();
-            console.log(`Current position below: ${belowValue}.`);
-            console.log(`X: ${currentBlock.x} Y: ${spaceBelow}.`);*/
+            if (belowValue != "_" && belowValue != currentBlock.id) return false;
         }
 
         return true;
@@ -300,6 +333,14 @@ class Piece {
     {
         if (!this.canMoveDown())
         {
+            if (!checkWin())
+            {
+                playing = false;
+                return;
+            }
+
+            destroyRow();
+
             let type = possiblePieces[Math.floor(Math.random() * possiblePieces.length)];
             currentPiece = new Piece(4, 0, type);
             return;
@@ -317,33 +358,17 @@ class Piece {
         {
             let currentBlock = this.blocks[i];           
             
-            if (direction == -1 && currentBlock.x <= 0)
-            {
-                console.log("X value exceedes board width.")
-                return false;
-            }
-            else if (direction == 1 && currentBlock.x >= board.length-1)
-            {
-                console.log("X value exceedes board width.")
-                return false;
-            }
+            if (direction == -1 && currentBlock.x <= 0) return false;
+            else if (direction == 1 && currentBlock.x >= board.length-1) return false;
 
             if (0 < currentBlock.x && currentBlock.x < board.length-1)
             {
                 let leftX = board[currentBlock.x-1][currentBlock.y];
                 let rightX = board[currentBlock.x+1][currentBlock.y];
     
-                if (direction == -1 && leftX != "_" && leftX != currentBlock.id)
-                {
-                    console.log(`Invalid position left.`);
-                    return false;
-                } 
+                if (direction == -1 && leftX != "_" && leftX != currentBlock.id) return false;
     
-                if (direction == 1 && rightX != "_" && rightX != currentBlock.id)
-                {
-                    console.log(`Invalid position to right.`);
-                    return false;
-                } 
+                if (direction == 1 && rightX != "_" && rightX != currentBlock.id) return false;
             }
         }
 
@@ -364,7 +389,7 @@ class Piece {
     {
         if (this.rotationState < 3) this.rotationState++;
         else if (this.rotationState >= 3) this.rotationState = 0;
-        
+
         for (let i = 0; i < this.blocks.length; i++)
         {
             let rotationSet = this.rotation[i];
@@ -397,15 +422,16 @@ class Block {
 
 var board = createBoard(10,20);
 var blockWidth = 30;
-let currentPiece = new Piece(4,0,possiblePieces[Math.floor(Math.random() * possiblePieces.length)]);
+var startCoords = [4,0]
+var currentPiece = new Piece(startCoords[0],startCoords[1],possiblePieces[Math.floor(Math.random() * possiblePieces.length)]);
+var playing = true;
 
 function main()
 {
     currentPiece.moveDown();
-    drawPieces();
     update();
+    drawPieces();
 }
-
 playerInput();
-setInterval(main, 300);
-
+main();
+if (playing) setInterval(main, 300);
