@@ -250,42 +250,85 @@ function checkWin()
 
 function getRow(row)
 {
-    output = [];
+    let output = [];
     for (let i = 0; i < board.length; i++)
     {
-        for (let j = 0; j < row; j++)
+        for (let j = 0; j < row+1; j++)
         {
-            output[i] = board[i][j];
+            let values = {
+                id: board[i][j],
+                x: i,
+                y: j
+            }
+            output[i] = values;
         }
     }
 
     return output;
 }
 
-function destroyRow()
+function getRowIds(row)
 {
-    if (!getRow(20).includes("_"))
+    let output = [];
+    for (let i = 0; i < getRow(row).length; i++)
     {
-        
-        for (let i = 0; i < board.length; i++)
-        {
-            for (let j = 0; j < 20; j++)
-            {
-                board[i][j] = "_";
-            }
-        }
-        drawPieces();
-        console.log(board);
-    } 
+        output[i] = getRow(row)[i]['id'];
+    }
+    
+    return output;
 }
 
-function checkForRowClears()
+function removeBlock(id, x, y)
 {
-    console.clear();
-    for (let i = 0; i < 20; i++)
+    let piece = pieces[id-1];
+    for (let i = 0; i < piece.blocks.length; i++)
     {
-        console.log(checkRow(i));
+        if(piece.blocks[i].x == x && piece.blocks[i].y == y) piece.blocks.splice(i,1);
     }
+}
+
+function removeBlocksFromRow(row)
+{
+    target = getRow(row);
+    for(let i = 0; i < target.length; i++)
+    {
+        if(target[i]['id'] != '_') removeBlock(target[i]['id'], target[i]['x'], target[i]['y']);
+    }  
+}
+
+function movePiecesDown(row)
+{
+    for (let i = row; i >= 0; i--)
+    {
+        target = getRow(i);
+
+        for(let j = 0; j < target.length; j++)
+        {
+            if(target[j]['id'] != '_')
+            {
+                let piece = pieces[(target[j]['id']-1)];
+                for (let k = 0; k < piece.blocks.length; k++)
+                {
+                    if(piece.blocks[k].x == target[j]['x'] && piece.blocks[k].y == target[j]['y'])
+                    {
+                        piece.blocks[k].y++;
+                    };
+                }
+            }
+        }  
+    }
+}
+
+function checkLineClears()
+{
+    for(let i = 19; i >= 0; i--)
+    {
+        if (!getRowIds(i).includes('_') && !getRowIds(i).includes(undefined))
+        {
+            removeBlocksFromRow(i);
+            movePiecesDown(i);
+        }
+    }   
 }
 
 class Piece {
@@ -339,7 +382,7 @@ class Piece {
                 return;
             }
 
-            destroyRow();
+            checkLineClears();
 
             let type = possiblePieces[Math.floor(Math.random() * possiblePieces.length)];
             currentPiece = new Piece(4, 0, type);
