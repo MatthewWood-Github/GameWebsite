@@ -255,6 +255,18 @@ function getRowIds(row)
     return output;
 }
 
+function getBlock(id, x, y)
+{
+    let piece = pieces[id-1];
+
+    for (let i = 0; i < piece.blocks.length; i++)
+    {
+        if(piece.blocks[i].x == x && piece.blocks[i].y == y) return piece.blocks[i];
+    }
+
+    return false;
+}
+
 function removeBlock(id, x, y)
 {
     let piece = pieces[id-1];
@@ -273,26 +285,17 @@ function removeBlocksFromRow(row)
     }  
 }
 
-function movePiecesDown(row)
+function movePiecesDown()
 {
-    for (let i = row; i >= 0; i--)
+    for (let i = 19; i >= 0; i--)
     {
-        target = getRow(i);
-
-        for(let j = 0; j < target.length; j++)
+        for (let j = 0; j < 10; j++)
         {
-            if(target[j]['id'] != '_')
+            if (board[j][i] != "_" && !(board[j][i] === undefined))
             {
-                let piece = pieces[(target[j]['id']-1)];
-                for (let k = 0; k < piece.blocks.length; k++)
-                {
-                    if(piece.blocks[k].x == target[j]['x'] && piece.blocks[k].y == target[j]['y'])
-                    {
-                        piece.blocks[k].y++;
-                    };
-                }
+                getBlock(board[j][i], j, i).moveToBottom();
             }
-        }  
+        }
     }
 }
 
@@ -303,7 +306,6 @@ function checkLineClears()
         if (!getRowIds(i).includes('_') && !getRowIds(i).includes(undefined))
         {
             removeBlocksFromRow(i);
-            movePiecesDown(i);
         }
     }   
 }
@@ -360,6 +362,8 @@ class Piece {
             }
 
             checkLineClears();
+
+            movePiecesDown();
 
             let type = possiblePieces[Math.floor(Math.random() * possiblePieces.length)];
             currentPiece = new Piece(4, 0, type);
@@ -437,6 +441,23 @@ class Block {
     moveDown()
     {
         this.y += 1;
+    }
+
+    moveToBottom()
+    {
+        while(this.isSpaceBelowValid()) this.moveDown();
+    }
+    
+    getSpaceBelow()
+    {
+        return board[this.x][this.y+1];
+    }
+
+    isSpaceBelowValid()
+    {
+        if (this.getSpaceBelow() == "_" || (this.getSpaceBelow() === undefined) && this.getSpaceBelow()) return true;
+
+        return false;
     }
 }
 
