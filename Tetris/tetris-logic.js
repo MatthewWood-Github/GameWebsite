@@ -407,7 +407,6 @@ class Piece {
     {
         let nextRotationState = this.rotationState+1;
         if (nextRotationState >= 3) nextRotationState = 0;
-        console.log(nextRotationState);
 
         for (let i = 0; i < this.blocks.length; i++)
         {
@@ -424,7 +423,6 @@ class Piece {
 
     rotate()
     {
-        console.log(this.isNextRotationValid());
         if (!this.isNextRotationValid()) return;
         
         if (this.rotationState < 3) this.rotationState++;
@@ -492,4 +490,4 @@ function main()
 playerInput();
 main();
 
-var game = setInterval(main, 300);
+var game = setInterval(main, 150);
