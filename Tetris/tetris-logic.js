@@ -189,7 +189,6 @@ function notEmptySpace(space)
 function getRow(row)
 {
     let output = [];
-    // for every column
     for (let x = 0; x < 10; x++)
     {
         output[x] = board[x][row];
@@ -200,7 +199,6 @@ function getRow(row)
 function checkAllRowsForClears()
 {
     let rows = [];
-    let output = [];
     for (let x = 19; x >= 0; x--)
     {
         if (!getRow(x).includes("_"))  rows.push(x);
@@ -299,7 +297,6 @@ function checkWin()
 
 function endGame()
 {
-    // TODO convert to css class
     window.removeEventListener("keydown", inputEngine);
     clearInterval(game);
     let overlay = document.createElement("img");
@@ -374,6 +371,7 @@ class Piece {
 
     canMoveHorizontal(direction)
     {
+        // TODO Simplify
         for (let i = 0; i < this.blocks.length; i++)
         {
             let currentBlock = this.blocks[i];           
@@ -405,8 +403,30 @@ class Piece {
         }
     }
 
+    isNextRotationValid()
+    {
+        let nextRotationState = this.rotationState+1;
+        if (nextRotationState >= 3) nextRotationState = 0;
+        console.log(nextRotationState);
+
+        for (let i = 0; i < this.blocks.length; i++)
+        {
+            let rotationSet = this.rotation[i];
+            let currentBlock = this.blocks[i];
+
+            let nextPos = board[currentBlock.x + rotationSet[nextRotationState][0]][(currentBlock.y + rotationSet[nextRotationState][1])];
+            if(nextPos === undefined) return false; 
+            if(nextPos != this.id && nextPos != "_") return false;
+        }
+
+        return true;
+    }
+
     rotate()
     {
+        console.log(this.isNextRotationValid());
+        if (!this.isNextRotationValid()) return;
+        
         if (this.rotationState < 3) this.rotationState++;
         else if (this.rotationState >= 3) this.rotationState = 0;
 
@@ -437,20 +457,10 @@ class Block {
     {
         this.y += amount;
     }
-
-    moveToBottom()
-    {
-        while(this.isSpaceBelowEmpty()) this.moveDown(1);
-    }
     
     getSpaceBelow()
     {
         return board[this.x][this.y+1];
-    }
-
-    isSpaceBelowEmpty()
-    {
-        return !notEmptySpace(this.getSpaceBelow());
     }
 
     canMoveDown()
