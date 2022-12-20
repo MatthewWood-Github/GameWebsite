@@ -6,7 +6,7 @@ const piece_T = {
     [2, 0] 
     ],
 
-    sprite: 'block-cyan.png',
+    sprite: 'Assets/block-cyan.png',
     rotation: [
         [[1,-1], [1,1], [-1,1], [-1,-1]],
         [[0,0], [0,0], [0,0], [0,0]],
@@ -23,7 +23,7 @@ const piece_I = {
     [3, 0]
     ],
 
-    sprite: 'block-gold.png',
+    sprite: 'Assets/block-gold.png',
     rotation: [
         [[2,-1], [1,2], [-2,1], [-1,-2]],
         [[1,0], [0,1], [-1,0], [0,-1]],
@@ -40,7 +40,7 @@ const piece_J = {
     [2, 1]
     ],
 
-    sprite: 'block-green.png',
+    sprite: 'Assets/block-green.png',
     rotation: [
         [[2,0], [0,2], [-2,0], [0,-2]],
         [[1,-1], [1,1], [-1,1], [-1,-1]],
@@ -57,7 +57,7 @@ const piece_Z = {
     [2, 1]
     ],
 
-    sprite: 'block-red.png',
+    sprite: 'Assets/block-red.png',
     rotation: [
         [[2,0], [0,2], [-2,0], [0,-2]],
         [[1,1], [-1,1], [-1,-1], [1,-1]],
@@ -74,7 +74,7 @@ const piece_S = {
     [2, 0]
     ],
 
-    sprite: 'block-blue.png',
+    sprite: 'Assets/block-blue.png',
     rotation: [
         [[1,-1], [1,1], [-1,1], [-1,-1]],
         [[0,0], [0,0], [0,0], [0,0]],
@@ -91,7 +91,7 @@ const piece_O = {
     [1, 1],
     ],
     
-    sprite: 'block-pink.png',
+    sprite: 'Assets/block-pink.png',
     rotation: [
         [[0, 0], [0, 0], [0, 0], [0, 0]],
         [[0, 0], [0, 0], [0, 0], [0, 0]],
@@ -108,7 +108,7 @@ const piece_L = {
     [2, 0],
     ],
     
-    sprite: 'block-yellow.png',
+    sprite: 'Assets/block-yellow.png',
     rotation: [
         [[1,-1], [1,1], [-1,1], [-1,-1]],
         [[0,0], [0,0], [0,0], [0,0]],
@@ -304,7 +304,7 @@ function endGame()
     grid.appendChild(overlay);
 
     let restartButton = document.createElement('button');
-    restartButton.innerHTML = "<img src='retry-button.png' style='box-shadow: 5px 5px;' onclick='window.location.reload()'>";
+    restartButton.innerHTML = "<img src='Assets/retry-button.png' style='box-shadow: 5px 5px;' onclick='window.location.reload()'>";
     restartButton.className = "restart-button";
     grid.appendChild(restartButton);
 }

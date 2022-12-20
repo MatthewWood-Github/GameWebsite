@@ -1,5 +1,5 @@
 body {
-    background-image: url("background.jpg");
+    background-image: url("Assets/background.jpg");
 }
 
 ul {
@@ -47,7 +47,7 @@ a, a:visited, a:hover, a:active {
 .grid {
     width: 302px;
     height: 602px;
-    background-image: url('tetris-grid.png');
+    background-image: url('Assets/tetris-grid.png');
     position: relative;
 
     display: grid;
@@ -91,7 +91,7 @@ a, a:visited, a:hover, a:active {
 .overlay {
     z-index: 9;
     position: absolute;
-    background-image: url("tetris-grid-overlay.png");
+    background-image: url("Assets/tetris-grid-overlay.png");
     height: 602px;
     width: 302px;
 }
