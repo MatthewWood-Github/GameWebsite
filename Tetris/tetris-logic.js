@@ -303,24 +303,12 @@ function endGame()
     window.removeEventListener("keydown", inputEngine);
     clearInterval(game);
     let overlay = document.createElement("img");
-    overlay.setAttribute("src", "tetris-grid-overlay.png");
-    overlay.setAttribute("alt", "overlay");
-    overlay.style.zIndex = 9;
-    overlay.style.position = "absolute";
+    overlay.className = "overlay";
     grid.appendChild(overlay);
 
     let restartButton = document.createElement('button');
     restartButton.innerHTML = "<img src='retry-button.png' style='box-shadow: 5px 5px;' onclick='window.location.reload()'>";
-    restartButton.style.width = "218px";
-    restartButton.style.height = "68px";
-    restartButton.style.position = "absolute";
-    restartButton.style.zIndex = 10;
-    restartButton.style.padding = "0px";
-    restartButton.style.margin = "0px";
-    restartButton.style.border = "0px";
-
-    restartButton.style.top = "319px";
-    restartButton.style.left = "42px";
+    restartButton.className = "restart-button";
     grid.appendChild(restartButton);
 }
 
