@@ -255,32 +255,73 @@ function moveBlocks(start, amount)
     blocks.forEach(block => block.moveDown(amount));
 }
 
+function inputEngine(e)
+{
+    currentKey = e.key.toUpperCase();
+
+    switch(currentKey)
+    {
+        case("A"):
+            currentPiece.moveHorizontal(-1);
+            break;
+
+        case("D"):
+            currentPiece.moveHorizontal(1);
+            break;
+        
+        case("S"):
+            currentPiece.moveDown();
+            break;
+
+        case("E"):
+            currentPiece.rotate();
+            break;
+    }
+    update();
+    drawPieces();
+}
+
 function playerInput()
 {
-    window.addEventListener("keydown", function (e) {
-        currentKey = e.key.toUpperCase();
-    
-        switch(currentKey)
-        {
-            case("A"):
-                currentPiece.moveHorizontal(-1);
-                break;
-    
-            case("D"):
-                currentPiece.moveHorizontal(1);
-                break;
-            
-            case("S"):
-                currentPiece.moveDown();
-                break;
+    window.addEventListener("keydown", inputEngine);
+}
 
-            case("E"):
-                currentPiece.rotate();
-                break;
-        }
-        update();
-        drawPieces();
-    });
+function checkWin()
+{
+    for (let x = 0; x < 10; x++)
+    {
+        if (getRow(0)[x] != "_") return true;
+        if (getRow(1)[x] != "_") return true;
+    }
+
+    return false;
+}
+
+function endGame()
+{
+    // TODO convert to css class
+    window.removeEventListener("keydown", inputEngine);
+    clearInterval(game);
+    let overlay = document.createElement("img");
+    overlay.setAttribute("src", "tetris-grid-overlay.png");
+    overlay.setAttribute("alt", "overlay");
+    overlay.style.zIndex = 9;
+    overlay.style.position = "absolute";
+    grid.appendChild(overlay);
+
+    let restartButton = document.createElement('button');
+    restartButton.innerHTML = "<img src='retry-button.png' style='box-shadow: 5px 5px;' onclick='window.location.reload()'>";
+    restartButton.style.width = "218px";
+    restartButton.style.height = "68px";
+    restartButton.style.position = "absolute";
+    restartButton.style.zIndex = 10;
+    restartButton.style.padding = "0px";
+    restartButton.style.margin = "0px";
+    restartButton.style.border = "0px";
+
+    restartButton.style.top = "319px";
+    restartButton.style.left = "42px";
+    grid.appendChild(restartButton);
 }
 
 class Piece {
@@ -324,10 +365,17 @@ class Piece {
     {
         if (!this.canMoveDown())
         {
+            if (checkWin() == true)
+            {
+                playing = false;
+                return;
+            } 
+
             checkAllRowsForClears();
             let type = possiblePieces[Math.floor(Math.random() * possiblePieces.length)];
             currentPiece = new Piece(4, 0, type);
             return;
+            
         } 
 
         for (let i = 0; i < this.blocks.length; i++)
@@ -381,7 +429,6 @@ class Piece {
 
             currentBlock.x += rotationSet[this.rotationState][0];
             currentBlock.y += rotationSet[this.rotationState][1];
-
         }
     }
 }
@@ -435,11 +482,16 @@ var playing = true;
 
 function main()
 {
-    currentPiece.moveDown();
-    update();
-    drawPieces();
+    if (playing == false) endGame();
+    else if (playing == true)
+    {
+        currentPiece.moveDown();
+        update();
+        drawPieces();
+    }
 }
 
 playerInput();
 main();
-if (playing) setInterval(main, 300);
+
+var game = setInterval(main, 300);
