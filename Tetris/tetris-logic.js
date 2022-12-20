@@ -148,7 +148,7 @@ function drawPieces()
     {
         for (let j = 0; j < board[i].length; j++)
         {
-            if (board[i][j] != "_")
+            if (notEmptySpace(board[i][j]))
             {
                 let piece = pieces[board[i][j]-1];
                 let elem = document.createElement("img");
@@ -165,6 +165,7 @@ function drawPieces()
         }
     }
 }
+
 function update()
 {   
     board = createBoard(10, 20);
@@ -180,11 +181,84 @@ function update()
     }
 }
 
+function notEmptySpace(space)
+{
+    return (space != "_" && !(space === undefined));
+}
+
+function getRow(row)
+{
+    let output = [];
+    // for every column
+    for (let x = 0; x < 10; x++)
+    {
+        output[x] = board[x][row];
+    }
+    return output;
+}
+
+function checkAllRowsForClears()
+{
+    let rows = [];
+    let output = [];
+    for (let x = 19; x >= 0; x--)
+    {
+        if (!getRow(x).includes("_"))  rows.push(x);
+    }
+
+    let start = rows[rows.length-1];
+    let len = rows.length;
+    rows.forEach(row => destroyRow(row));
+    moveBlocks(start, len);
+}
+
+function getBlock(id, x, y)
+{
+    let piece = pieces[id-1];
+
+    for (let j = 0; j < piece.blocks.length; j++)
+    {
+        let block = piece.blocks[j];
+        if (block.x == x && block.y == y) return block;
+    }
+
+    return false;
+}
+
+function destroyRow(row)
+{
+    for (let x = 0; x < 10; x++)
+    {
+        if (board[x][row] != "_")
+        {
+            let piece = pieces[board[x][row]-1];
+            let block = getBlock(board[x][row], x, row);
+            piece.blocks.splice(piece.blocks.indexOf(block), 1);
+        }
+    }
+}
+
+function moveBlocks(start, amount)
+{
+    let blocks = [];
+    for (let x = 0; x < 10; x++)
+    {
+        for (let y = start; y >= 0; y--)
+        {
+            if (board[x][y] != "_" && !(board[x][y] === undefined))
+            {
+                if (getBlock(board[x][y], x, y) != false) blocks.push(getBlock(board[x][y], x, y));
+            } 
+        }
+    }
+
+    blocks.forEach(block => block.moveDown(amount));
+}
+
 function playerInput()
 {
     window.addEventListener("keydown", function (e) {
         currentKey = e.key.toUpperCase();
-        //document.getElementById("keyboard-debug").innerHTML = currentKey;
     
         switch(currentKey)
         {
@@ -207,107 +281,6 @@ function playerInput()
         update();
         drawPieces();
     });
-}
-
-function validSpace(space)
-{
-    return space == "_";
-}
-
-function checkWin()
-{
-    for (let i = 0; i < board.length; i++)
-    {
-        if (board[i][0] != "_") return false; 
-        if (board[i][1] != "_") return false; 
-    }
-    return true;
-}
-
-
-function getRow(row)
-{
-    let output = [];
-    for (let i = 0; i < board.length; i++)
-    {
-        for (let j = 0; j < row+1; j++)
-        {
-            let values = {
-                id: board[i][j],
-                x: i,
-                y: j
-            }
-            output[i] = values;
-        }
-    }
-
-    return output;
-}
-
-function getRowIds(row)
-{
-    let output = [];
-    for (let i = 0; i < getRow(row).length; i++)
-    {
-        output[i] = getRow(row)[i]['id'];
-    }
-    
-    return output;
-}
-
-function getBlock(id, x, y)
-{
-    let piece = pieces[id-1];
-
-    for (let i = 0; i < piece.blocks.length; i++)
-    {
-        if(piece.blocks[i].x == x && piece.blocks[i].y == y) return piece.blocks[i];
-    }
-
-    return false;
-}
-
-function removeBlock(id, x, y)
-{
-    let piece = pieces[id-1];
-    for (let i = 0; i < piece.blocks.length; i++)
-    {
-        if(piece.blocks[i].x == x && piece.blocks[i].y == y) piece.blocks.splice(i,1);
-    }
-}
-
-function removeBlocksFromRow(row)
-{
-    target = getRow(row);
-    for(let i = 0; i < target.length; i++)
-    {
-        if(target[i]['id'] != '_') removeBlock(target[i]['id'], target[i]['x'], target[i]['y']);
-    }  
-}
-
-function movePiecesDown()
-{
-    for (let i = 19; i >= 0; i--)
-    {
-        for (let j = 0; j < 10; j++)
-        {
-            if (board[j][i] != "_" && !(board[j][i] === undefined))
-            {
-                getBlock(board[j][i], j, i).moveToBottom();
-            }
-        }
-    }
-}
-
-function checkLineClears()
-{
-    for(let i = 19; i >= 0; i--)
-    {
-        if (!getRowIds(i).includes('_') && !getRowIds(i).includes(undefined))
-        {
-            removeBlocksFromRow(i);
-        }
-    }   
 }
 
 class Piece {
@@ -341,30 +314,17 @@ class Piece {
         for (let i = 0; i < this.blocks.length; i++)
         {
             let currentBlock = this.blocks[i];
-            let spaceBelow = currentBlock.y+1;
-            let belowValue = board[currentBlock.x][spaceBelow];
-            
-            if (belowValue === undefined) return false;
-            
-            if (belowValue != "_" && belowValue != currentBlock.id) return false;
+            if (!currentBlock.canMoveDown()) return false;
         }
 
         return true;
     }
+
     moveDown()
     {
         if (!this.canMoveDown())
         {
-            if (!checkWin())
-            {
-                playing = false;
-                return;
-            }
-
-            checkLineClears();
-
-            movePiecesDown();
-
+            checkAllRowsForClears();
             let type = possiblePieces[Math.floor(Math.random() * possiblePieces.length)];
             currentPiece = new Piece(4, 0, type);
             return;
@@ -372,7 +332,7 @@ class Piece {
 
         for (let i = 0; i < this.blocks.length; i++)
         {
-            this.blocks[i].moveDown();
+            this.blocks[i].moveDown(1);
         }
     }
 
@@ -390,9 +350,9 @@ class Piece {
                 let leftX = board[currentBlock.x-1][currentBlock.y];
                 let rightX = board[currentBlock.x+1][currentBlock.y];
     
-                if (direction == -1 && leftX != "_" && leftX != currentBlock.id) return false;
+                if (direction == -1 && notEmptySpace(leftX)  && leftX != currentBlock.id) return false;
     
-                if (direction == 1 && rightX != "_" && rightX != currentBlock.id) return false;
+                if (direction == 1 && notEmptySpace(rightX) && rightX != currentBlock.id) return false;
             }
         }
 
@@ -438,14 +398,14 @@ class Block {
         this.x += direction;
     }
 
-    moveDown()
+    moveDown(amount)
     {
-        this.y += 1;
+        this.y += amount;
     }
 
     moveToBottom()
     {
-        while(this.isSpaceBelowValid()) this.moveDown();
+        while(this.isSpaceBelowEmpty()) this.moveDown(1);
     }
     
     getSpaceBelow()
@@ -453,11 +413,17 @@ class Block {
         return board[this.x][this.y+1];
     }
 
-    isSpaceBelowValid()
+    isSpaceBelowEmpty()
     {
-        if (this.getSpaceBelow() == "_" || (this.getSpaceBelow() === undefined) && this.getSpaceBelow()) return true;
+        return !notEmptySpace(this.getSpaceBelow());
+    }
 
-        return false;
+    canMoveDown()
+    {
+        if (this.getSpaceBelow() === undefined) return false;
+        if (this.getSpaceBelow() != ("_") && this.getSpaceBelow() != this.id) return false;
+
+        return true;
     }
 }
 
@@ -473,6 +439,7 @@ function main()
     update();
     drawPieces();
 }
+
 playerInput();
 main();
 if (playing) setInterval(main, 300);
