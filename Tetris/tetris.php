@@ -19,8 +19,11 @@
         </nav>
 
         <div class="center" style="margin-top: 20px;">
+            <div class="held" id="held"> </div>
             <div class="grid" id="grid"> </div>
+            <div class="queue" id="queue"> </div>
         </div>
+            
         
     <script src="tetris-logic.js"></script>
     </body>

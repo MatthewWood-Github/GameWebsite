@@ -35,8 +35,10 @@ a, a:visited, a:hover, a:active {
 }
 
 .center {
+    width: 40%;
     display: flex;
     justify-content: space-around;
+    margin: auto;
 }
 
 .main {
@@ -47,7 +49,6 @@ a, a:visited, a:hover, a:active {
 .grid {
     width: 302px;
     height: 602px;
-    background-image: url('Assets/tetris-grid.png');
     position: relative;
 
     display: grid;
@@ -55,25 +56,30 @@ a, a:visited, a:hover, a:active {
     grid-template-rows: repeat(20, 30px);
 }
 
-.debug {
+.queue {
     color: lightgrey;
     text-align: center;
     padding: 5px;
     border: 1px solid lightgrey;
-
-    width: 25%;
-    height: auto;
+    z-index: 9;
+    background-image: url("Assets/queue/queue.png");
+    width: 180px;
+    height: 430px;
+    background-position: center;
+    position: relative;
 }
 
-.keyboard-debug {
+.held {
     color: lightgrey;
     text-align: center;
     font-size: 50px;
     padding: 5px;
     border: 1px solid lightgrey;
 
-    width: 25%;
-    height: 100%;
+    background-image: url("Assets/queue/held.png");
+    width: 180px;
+    height: 202px;
+    background-position: center;
 }
 
 .restart-button {
@@ -94,4 +100,11 @@ a, a:visited, a:hover, a:active {
     background-image: url("Assets/tetris-grid-overlay.png");
     height: 602px;
     width: 302px;
+}
+
+.pieceIcon {
+    position: absolute;
+    z-index: 10;
+    width: 150px;
+    height: 100px;
 }

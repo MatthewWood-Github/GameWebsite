@@ -1,4 +1,7 @@
+var skin = "skin2";
+
 const piece_T = {
+    name: "piece_T",
     shape: [
     [0, 0],
     [1, 0],
@@ -6,7 +9,7 @@ const piece_T = {
     [2, 0] 
     ],
 
-    sprite: 'Assets/block-cyan.png',
+    sprite: `Assets/${skin}/block-pink.png`,
     rotation: [
         [[1,-1], [1,1], [-1,1], [-1,-1]],
         [[0,0], [0,0], [0,0], [0,0]],
@@ -16,6 +19,7 @@ const piece_T = {
 };
 
 const piece_I = {
+    name: "piece_I",
     shape: [
     [0, 0],
     [1, 0],
@@ -23,7 +27,7 @@ const piece_I = {
     [3, 0]
     ],
 
-    sprite: 'Assets/block-gold.png',
+    sprite: `Assets/${skin}/block-cyan.png`,
     rotation: [
         [[2,-1], [1,2], [-2,1], [-1,-2]],
         [[1,0], [0,1], [-1,0], [0,-1]],
@@ -33,6 +37,7 @@ const piece_I = {
 };
 
 const piece_J = {
+    name: "piece_J",
     shape: [
     [0, 0],
     [0, 1],
@@ -40,7 +45,7 @@ const piece_J = {
     [2, 1]
     ],
 
-    sprite: 'Assets/block-green.png',
+    sprite: `Assets/${skin}/block-blue.png`,
     rotation: [
         [[2,0], [0,2], [-2,0], [0,-2]],
         [[1,-1], [1,1], [-1,1], [-1,-1]],
@@ -50,6 +55,7 @@ const piece_J = {
 };
 
 const piece_Z = {
+    name: "piece_Z",
     shape: [
     [0, 0],
     [1, 0],
@@ -57,7 +63,7 @@ const piece_Z = {
     [2, 1]
     ],
 
-    sprite: 'Assets/block-red.png',
+    sprite: `Assets/${skin}/block-red.png`,
     rotation: [
         [[2,0], [0,2], [-2,0], [0,-2]],
         [[1,1], [-1,1], [-1,-1], [1,-1]],
@@ -67,6 +73,7 @@ const piece_Z = {
 };
 
 const piece_S = {
+    name: "piece_S",
     shape: [
     [0, 1],
     [1, 1],
@@ -74,7 +81,7 @@ const piece_S = {
     [2, 0]
     ],
 
-    sprite: 'Assets/block-blue.png',
+    sprite: `Assets/${skin}/block-green.png`,
     rotation: [
         [[1,-1], [1,1], [-1,1], [-1,-1]],
         [[0,0], [0,0], [0,0], [0,0]],
@@ -84,6 +91,7 @@ const piece_S = {
 };
 
 const piece_O = {
+    name: "piece_O",
     shape: [
     [0, 0],
     [0, 1],
@@ -91,7 +99,7 @@ const piece_O = {
     [1, 1],
     ],
     
-    sprite: 'Assets/block-pink.png',
+    sprite: `Assets/${skin}/block-yellow.png`,
     rotation: [
         [[0, 0], [0, 0], [0, 0], [0, 0]],
         [[0, 0], [0, 0], [0, 0], [0, 0]],
@@ -101,6 +109,7 @@ const piece_O = {
 };
 
 const piece_L = {
+    name: "piece_L",
     shape: [
     [0, 1],
     [1, 1],
@@ -108,7 +117,7 @@ const piece_L = {
     [2, 0],
     ],
     
-    sprite: 'Assets/block-yellow.png',
+    sprite: `Assets/${skin}/block-orange.png`,
     rotation: [
         [[1,-1], [1,1], [-1,1], [-1,-1]],
         [[0,0], [0,0], [0,0], [0,0]],
@@ -123,6 +132,7 @@ var pieceCount = 0;
 var pieces = [];
 
 var grid = document.getElementById("grid");
+grid.style.backgroundImage = `url('Assets/${skin}/tetris-grid.png')`;
 
 var currentKey;
 
@@ -357,10 +367,9 @@ class Piece {
             } 
 
             checkAllRowsForClears();
-            let type = possiblePieces[Math.floor(Math.random() * possiblePieces.length)];
-            currentPiece = new Piece(4, 0, type);
+            currentPiece = new Piece(startCoords[0], startCoords[1], pieceQueue.shift());
+            pieceQueue.push(possiblePieces[Math.floor(Math.random() * possiblePieces.length)]);
             return;
-            
         } 
 
         for (let i = 0; i < this.blocks.length; i++)
@@ -473,7 +482,42 @@ class Block {
 var board = createBoard(10,20);
 var blockWidth = 30;
 var startCoords = [4,0]
-var currentPiece = new Piece(startCoords[0],startCoords[1],possiblePieces[Math.floor(Math.random() * possiblePieces.length)]);
+
+var queue = document.getElementById("queue");
+var pieceQueue = [];
+var queueSlots = [
+    ["19px","93px"],
+    ["19px","207px"],
+    ["19px","321px"]
+]
+
+function drawQueue()
+{
+    queue.innerHTML = "";
+    for (let x = 0; x < pieceQueue.length; x++)
+    {
+        let icon = pieceQueue[x]['name'];
+        let pieceIcon = document.createElement("img");
+        pieceIcon.setAttribute("src", `Assets/queue/${icon}.png`);
+        pieceIcon.setAttribute("alt", "piece");
+        pieceIcon.className = "pieceIcon";
+        pieceIcon.style.left = queueSlots[x][0];
+        pieceIcon.style.top = queueSlots[x][1];
+        queue.appendChild(pieceIcon);
+    }
+}
+
+
+function startQueue()
+{
+    for (let x = 0; x < 4; x++)
+    {
+        pieceQueue.push(possiblePieces[Math.floor(Math.random() * possiblePieces.length)]);
+    }
+}
+
+startQueue();
+var currentPiece = new Piece(startCoords[0], startCoords[1], pieceQueue.shift());
 var playing = true;
 
 function main()
@@ -484,6 +528,7 @@ function main()
         currentPiece.moveDown();
         update();
         drawPieces();
+        drawQueue();
     }
 }
 
