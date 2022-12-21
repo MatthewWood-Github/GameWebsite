@@ -308,7 +308,7 @@ function storeCurrentPiece()
     pieceIcon.setAttribute("src", `Assets/queue/${icon}.png`);
     pieceIcon.setAttribute("alt", "piece");
     pieceIcon.style.position = "absolute";
-    pieceIcon.style.marginTop = "-452px";
+    pieceIcon.style.marginTop = "-451px";
     pieceIcon.style.marginLeft = "-76px";
     heldDiv.appendChild(pieceIcon);
 }
