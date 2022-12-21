@@ -218,6 +218,8 @@ function checkAllRowsForClears()
     let len = rows.length;
     rows.forEach(row => destroyRow(row));
     moveBlocks(start, len);
+    score += len * (100 + (200 * len * level));
+    lines += len;
 }
 
 function getBlock(id, x, y)
@@ -507,7 +509,6 @@ function drawQueue()
     }
 }
 
-
 function startQueue()
 {
     for (let x = 0; x < 4; x++)
@@ -519,6 +520,35 @@ function startQueue()
 startQueue();
 var currentPiece = new Piece(startCoords[0], startCoords[1], pieceQueue.shift());
 var playing = true;
+var held;
+
+scoreDiv = document.getElementById("score");
+levelDiv = document.getElementById("level");
+linesDiv = document.getElementById("lines");
+
+function updateLevels()
+{
+    if (lines < 10) return;
+    if (level >= maxLevel) 
+    {
+        level = maxLevel;
+        return;
+    }
+
+    level = Math.ceil(lines / 10);
+}
+
+function updateInformation()
+{
+    scoreDiv.innerHTML = `<p class="score-text"> ${score} </p>`;
+    levelDiv.innerHTML = `<p class="score-text"> ${level} </p>`;
+    linesDiv.innerHTML = `<p class="score-text"> ${lines} </p>`;
+}
+
+var score = 0;
+var level = 1;
+var maxLevel = 10;
+var lines = 0;
 
 function main()
 {
@@ -529,10 +559,14 @@ function main()
         update();
         drawPieces();
         drawQueue();
+        updateLevels();
+        updateInformation();
     }
 }
 
 playerInput();
 main();
 
-var game = setInterval(main, 150);
+var maxTickRate = 300;
+var minTickRate = 100;
+var game = setInterval(main, (maxTickRate - ((maxTickRate - minTickRate / 10) * level)));

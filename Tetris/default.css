@@ -82,6 +82,24 @@ a, a:visited, a:hover, a:active {
     background-position: center;
 }
 
+.small-box {
+    color: lightgrey;
+    text-align: center;
+    font-size: 50px;
+    padding: 5px;
+    border: 1px solid lightgrey;
+
+    width: 180px;
+    height: 80px;
+    background-position: center;
+}
+
+.score-text {
+    font-size: 22px;
+    margin-top: 44px;
+    font-family: "Copperplate", fantasy;
+}
+
 .restart-button {
     width: 218px;
     height: 68px;
