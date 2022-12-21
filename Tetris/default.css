@@ -1,16 +1,24 @@
 body {
     background-image: url("Assets/background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 ul {
-    height: 100%;
-    margin: 0px;
+    height: 90%;
+    padding: 2px;
+    border: 0px;
+    margin: auto;
 }
 
 li {
+    width: auto;
+    height: auto;
+    padding-left: 10px;
+    padding-right: 10px;
     display: block;   
     text-align: justify;
-    font-size: larger;
+    font-size: 30px;
     line-height: 45px;
 }
 
@@ -25,17 +33,17 @@ a, a:visited, a:hover, a:active {
     width: 100%;
     color: white;
     background-color: #333333;
+    border-radius: 10px;
     font-family: "Copperplate", fantasy;
 }
 
 .centerNavbarElements {
     height: 100%;
-    width: 50%;
+    width: 40%;
     margin: auto;
 }
 
 .center {
-    width: 40%;
     display: flex;
     justify-content: space-around;
     margin: auto;
@@ -50,6 +58,7 @@ a, a:visited, a:hover, a:active {
     width: 302px;
     height: 602px;
     position: relative;
+    border: 3px solid black;
 
     display: grid;
     grid-template-columns: repeat(10, 30px);
@@ -57,16 +66,17 @@ a, a:visited, a:hover, a:active {
 }
 
 .queue {
-    color: lightgrey;
-    text-align: center;
-    padding: 5px;
-    border: 1px solid lightgrey;
-    z-index: 9;
-    background-image: url("Assets/queue/queue.png");
     width: 180px;
     height: 430px;
-    background-position: center;
+
+    text-align: center;
+    padding: 5px;
+    border: 3px solid black;
+    border-radius: 20px;
     position: relative;
+
+    background-image: url("Assets/queue/queue.png");
+    background-position: center;
 }
 
 .held {
@@ -74,7 +84,8 @@ a, a:visited, a:hover, a:active {
     text-align: center;
     font-size: 50px;
     padding: 5px;
-    border: 1px solid lightgrey;
+    border: 3px solid black;
+    border-radius: 20px;
 
     background-image: url("Assets/queue/held.png");
     width: 180px;
@@ -86,8 +97,9 @@ a, a:visited, a:hover, a:active {
     color: lightgrey;
     text-align: center;
     font-size: 50px;
-    padding: 5px;
-    border: 1px solid lightgrey;
+    padding: 2px;
+    border: 3px solid black;
+    border-radius: 30px;
 
     width: 180px;
     height: 80px;
@@ -105,19 +117,26 @@ a, a:visited, a:hover, a:active {
     height: 68px;
     position: absolute;
     z-index: 10;
+
+    top: 319px;
+    left: 42px;
+
     padding: 0px;
     margin: 0px;
     border: 0px;
-    top: 319px;
-    left: 42px;
+
+    box-shadow: 5px 5px;
 }
 
 .overlay {
-    z-index: 9;
     position: absolute;
     background-image: url("Assets/tetris-grid-overlay.png");
     height: 602px;
     width: 302px;
+
+    padding: 0px;
+    margin: 0px;
+    
 }
 
 .pieceIcon {

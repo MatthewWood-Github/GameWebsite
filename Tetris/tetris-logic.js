@@ -297,7 +297,6 @@ function storeCurrentPiece()
         previousHeld = temp;
         currentPiece = new Piece(startCoords[0], startCoords[1], held.typeRef);
         held = temp;
-        console.log(previousHeld);
     }
 
     held.blocks = [];
@@ -309,7 +308,7 @@ function storeCurrentPiece()
     pieceIcon.setAttribute("src", `Assets/queue/${icon}.png`);
     pieceIcon.setAttribute("alt", "piece");
     pieceIcon.style.position = "absolute";
-    pieceIcon.style.marginTop = "-457px";
+    pieceIcon.style.marginTop = "-452px";
     pieceIcon.style.marginLeft = "-76px";
     heldDiv.appendChild(pieceIcon);
 }
@@ -358,7 +357,7 @@ function endGame()
     grid.appendChild(overlay);
 
     let restartButton = document.createElement('button');
-    restartButton.innerHTML = "<img src='Assets/retry-button.png' style='box-shadow: 5px 5px;' onclick='window.location.reload()'>";
+    restartButton.innerHTML = "<img src='Assets/retry-button.png' onclick='window.location.reload()'>";
     restartButton.className = "restart-button";
     grid.appendChild(restartButton);
 }
@@ -527,12 +526,12 @@ class Block {
 }
 
 var board = createBoard(10,20);
-var blockWidth = 30;
-var startCoords = [4,0]
+const blockWidth = 30;
+const startCoords = [4,0]
 
-var queue = document.getElementById("queue");
+const queue = document.getElementById("queue");
 var pieceQueue = [];
-var queueSlots = [
+const queueSlots = [
     ["19px","93px"],
     ["19px","207px"],
     ["19px","321px"]
@@ -571,9 +570,9 @@ var held;
 var previousHeld;
 var pieceIcon = undefined;
 
-scoreDiv = document.getElementById("score");
-levelDiv = document.getElementById("level");
-linesDiv = document.getElementById("lines");
+const scoreDiv = document.getElementById("score");
+const levelDiv = document.getElementById("level");
+const linesDiv = document.getElementById("lines");
 
 function updateLevels()
 {
