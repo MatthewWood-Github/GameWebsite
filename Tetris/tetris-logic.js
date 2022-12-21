@@ -164,7 +164,6 @@ function drawPieces()
 
                 if (piece === undefined) return;
 
-                console.log(piece);
                 let elem = document.createElement("img");
                 elem.setAttribute("src", `${piece.sprite}`);
                 elem.setAttribute("alt", "block");
@@ -293,14 +292,16 @@ function storeCurrentPiece()
 
     else
     {
+        if (previousHeld === held) return;
         let temp = currentPiece;
+        previousHeld = temp;
         currentPiece = new Piece(startCoords[0], startCoords[1], held.typeRef);
         held = temp;
+        console.log(previousHeld);
     }
 
     held.blocks = [];
     
-    //pieces.splice(pieces.indexOf(held), 1);
     let icon = held.name;
     
     if (pieceIcon === undefined) pieceIcon = document.createElement("img");
@@ -414,6 +415,7 @@ class Piece {
             checkAllRowsForClears();
             currentPiece = new Piece(startCoords[0], startCoords[1], pieceQueue.shift());
             pieceQueue.push(possiblePieces[Math.floor(Math.random() * possiblePieces.length)]);
+            previousHeld = undefined;
             return;
         } 
 
@@ -566,6 +568,7 @@ var playing = true;
 
 heldDiv = document.getElementById("held");
 var held;
+var previousHeld;
 var pieceIcon = undefined;
 
 scoreDiv = document.getElementById("score");
