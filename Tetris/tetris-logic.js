@@ -161,6 +161,10 @@ function drawPieces()
             if (notEmptySpace(board[i][j]))
             {
                 let piece = pieces[board[i][j]-1];
+
+                if (piece === undefined) return;
+
+                console.log(piece);
                 let elem = document.createElement("img");
                 elem.setAttribute("src", `${piece.sprite}`);
                 elem.setAttribute("alt", "block");
@@ -265,6 +269,50 @@ function moveBlocks(start, amount)
     blocks.forEach(block => block.moveDown(amount));
 }
 
+function checkWin()
+{
+    for (let x = 0; x < 10; x++)
+    {
+        if (getRow(0)[x] != "_") return true;
+        if (getRow(1)[x] != "_") return true;
+    }
+
+    return false;
+}
+
+function storeCurrentPiece()
+{
+    if (!(held === undefined) && held.name == currentPiece.name) return;
+
+    if (held === undefined)
+    {
+        held = currentPiece;
+        currentPiece = new Piece(startCoords[0], startCoords[1], pieceQueue.shift());
+        pieceQueue.push(possiblePieces[Math.floor(Math.random() * possiblePieces.length)]); 
+    }
+
+    else
+    {
+        let temp = currentPiece;
+        currentPiece = new Piece(startCoords[0], startCoords[1], held.typeRef);
+        held = temp;
+    }
+
+    held.blocks = [];
+    
+    //pieces.splice(pieces.indexOf(held), 1);
+    let icon = held.name;
+    
+    if (pieceIcon === undefined) pieceIcon = document.createElement("img");
+    
+    pieceIcon.setAttribute("src", `Assets/queue/${icon}.png`);
+    pieceIcon.setAttribute("alt", "piece");
+    pieceIcon.style.position = "absolute";
+    pieceIcon.style.marginTop = "-457px";
+    pieceIcon.style.marginLeft = "-76px";
+    heldDiv.appendChild(pieceIcon);
+}
+
 function inputEngine(e)
 {
     currentKey = e.key.toUpperCase();
@@ -286,6 +334,10 @@ function inputEngine(e)
         case("E"):
             currentPiece.rotate();
             break;
+
+        case("F"):
+            storeCurrentPiece();
+            break;
     }
     update();
     drawPieces();
@@ -294,17 +346,6 @@ function inputEngine(e)
 function playerInput()
 {
     window.addEventListener("keydown", inputEngine);
-}
-
-function checkWin()
-{
-    for (let x = 0; x < 10; x++)
-    {
-        if (getRow(0)[x] != "_") return true;
-        if (getRow(1)[x] != "_") return true;
-    }
-
-    return false;
 }
 
 function endGame()
@@ -327,6 +368,8 @@ class Piece {
       this.startY = startY;
       this.id = ++pieceCount;
 
+      this.typeRef = type;
+      this.name = type['name'];
       this.type = type['shape'];
       this.sprite = type['sprite'];
       this.rotation = type['rotation'];
@@ -520,7 +563,10 @@ function startQueue()
 startQueue();
 var currentPiece = new Piece(startCoords[0], startCoords[1], pieceQueue.shift());
 var playing = true;
+
+heldDiv = document.getElementById("held");
 var held;
+var pieceIcon = undefined;
 
 scoreDiv = document.getElementById("score");
 levelDiv = document.getElementById("level");
@@ -569,4 +615,5 @@ main();
 
 var maxTickRate = 300;
 var minTickRate = 100;
-var game = setInterval(main, (maxTickRate - ((maxTickRate - minTickRate / 10) * level)));
+let tickRate = (maxTickRate - minTickRate) / 10;
+var game = setInterval(main, (maxTickRate - (tickRate * level)));
