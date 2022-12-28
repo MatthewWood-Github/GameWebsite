@@ -13,7 +13,7 @@
                 <ul class="center">
                     <li> <a href="index.php"> Home </a> </li>
                     <li> <a href="tetris.php"> Play </a> </li>
-                    <li> <a href="#"> FAQ </a> </li>
+                    <li> <a href="login.php"> Login </a> </li>
                 </ul>
             <div>
         </nav>
